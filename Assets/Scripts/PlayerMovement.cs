@@ -5,7 +5,7 @@ using System.Collections.Generic;  // Add this for other collection typespublic 
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private TrailRenderer trailRenderer;  // Add this at the top with your other variables
+    [SerializeField] private TrailRenderer trailRenderer;
     Rigidbody2D rb;
     [SerializeField] float speed = 1f;
     [SerializeField] float jumpHeight = 3f;
@@ -105,7 +105,7 @@ public class PlayerMovement : MonoBehaviour
             
         
     } 
-    private IEnumerator Dash()
+    IEnumerator Dash()
     {
         canDash = false;
         isDashing = true;
@@ -126,6 +126,8 @@ public class PlayerMovement : MonoBehaviour
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
     }
+
+    
 
 
 
