@@ -17,6 +17,9 @@ public class PlayerMovement : MonoBehaviour
     float dashingTime = 0.2f;
     float dashingCooldown = 1f;
     bool isFacingRight = true;
+    [SerializeField] private LayerMask groundLayer; 
+    [SerializeField] private Transform groundCheck; 
+    [SerializeField] private float groundCheckRadius = 0.2f; 
     public CoinManager cm;
 
     Animator anim;
@@ -34,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
        
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        
         if (isDashing)
         {
             return;
@@ -46,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
             StartCoroutine(Dash());
         } 
 
-        if ((isFacingRight && direction == -1) || (!isFacingRight && direction ==1))
+        if ((isFacingRight && direction == -1) || (!isFacingRight && direction == 1))
             Flip();
     }
 
@@ -154,6 +159,17 @@ public class PlayerMovement : MonoBehaviour
             cm.coinCount++;
         }
     }
+    
+    void OnDrawGizmos()
+    {
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
+
+    }
+
 
 
 
