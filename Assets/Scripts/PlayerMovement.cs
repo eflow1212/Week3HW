@@ -11,11 +11,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpHeight = 3f;
     float direction = 0;
     bool isGrounded = false;
-    private bool canDash = true;
-    private bool isDashing;
-    private float dashingPower = 24f;
-    private float dashingTime = 0.2f;
-    private float dashingCooldown = 1f;
+    bool canDash = true;
+    bool isDashing;
+    float dashingPower = 24f;
+    float dashingTime = 0.2f;
+    float dashingCooldown = 1f;
+    bool isFacingRight = true;
+    public CoinManager cm;
+
+    Animator anim;
 
 
 
@@ -23,11 +27,13 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+       
         if (isDashing)
         {
             return;
@@ -39,6 +45,9 @@ public class PlayerMovement : MonoBehaviour
         {
             StartCoroutine(Dash());
         } 
+
+        if ((isFacingRight && direction == -1) || (!isFacingRight && direction ==1))
+            Flip();
     }
 
     void OnMove(InputValue value)
@@ -52,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
     void Move(float dir)
     {
         rb.linearVelocity = new Vector2(dir * speed, rb.linearVelocity.y);
+        anim.SetBool("isRunning", dir != 0);
     }
     void OnJump()
     {
@@ -127,7 +137,23 @@ public class PlayerMovement : MonoBehaviour
         canDash = true;
     }
 
-    
+    private void Flip()
+    {
+        isFacingRight = !isFacingRight;
+        Vector3 newLocalScale = transform.localScale;
+        newLocalScale.x *= -1f;
+        transform.localScale = newLocalScale;
+
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Coin"))
+        {
+            Destroy(other.gameObject);
+            cm.coinCount++;
+        }
+    }
 
 
 
